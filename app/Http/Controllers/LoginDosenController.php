@@ -39,7 +39,8 @@ class LoginDosenController extends Controller
 
     $request->session()->regenerate();
 
-    return redirect()->route('homedosen'); // sesuaikan route tujuan
+    return redirect('/');
+
 }
 
 public function destroy(Request $request)

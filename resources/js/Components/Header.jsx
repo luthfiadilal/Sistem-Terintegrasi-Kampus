@@ -14,8 +14,7 @@ export default function Header({ onToggleSidebar }) {
     };
 
     const homePage = () => {
-        const routeName = url === "/homedosen" ? "homedosen" : "home";
-        Inertia.get(route(routeName));
+        Inertia.get(route("home"));
     };
 
     return (

@@ -1,6 +1,7 @@
 <?php
 
 use Inertia\Inertia;
+use App\Models\Semester;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,32 +13,72 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KrsDosenController;
 use App\Http\Controllers\LoginDosenController;
 use App\Http\Controllers\RegisterDosenController;
+use App\Http\Controllers\MataKuliahController;
 
-Route::get('/', function () {
-    $mahasiswa = Auth::user()->load(['waliDosen', 'krs.mataKuliah.dosen']);
+Route::middleware(['auth:web,dosen'])->get('/', function () {
+    if (Auth::guard('web')->check()) {
+        $mahasiswa = Auth::guard('web')->user()->load(['waliDosen', 'krs.mataKuliah.dosen']);
+        return Inertia::render('Home', [
+            'mahasiswa' => $mahasiswa,
+            'canLogin' => Route::has('login'),
+            'canRegister' => Route::has('register'),
+            'laravelVersion' => Application::VERSION,
+            'phpVersion' => PHP_VERSION,
+        ]);
+    }
+
+    if (Auth::guard('dosen')->check()) {
+        $dosen = Auth::guard('dosen')->user();
+        $matakuliah = $dosen->mataKuliah()->with('semester')->get();
+        $semester = \App\Models\Semester::all();
+
+        return Inertia::render('HomeDosen', [
+            'dosen' => $dosen,
+            'matakuliah' => $matakuliah,
+            'semesters' => $semester,
+            'canLogin' => Route::has('logindosen'),
+            'canRegister' => Route::has('registerdosen'),
+            'laravelVersion' => Application::VERSION,
+            'phpVersion' => PHP_VERSION,
+        ]);
+    }
+
+    return redirect()->route('login');
+})->name('home');
+
+// Route::get('/', function () {
+//     if (Auth::guard('web')->check()) {
+//         $mahasiswa = Auth::guard('web')->user()->load(['waliDosen', 'krs.mataKuliah.dosen']);
+//         return Inertia::render('Home', [
+//             'mahasiswa' => $mahasiswa,
+//             'canLogin' => Route::has('login'),
+//             'canRegister' => Route::has('register'),
+//             'laravelVersion' => Application::VERSION,
+//             'phpVersion' => PHP_VERSION,
+//         ]);
+//     }
+
+//     if (Auth::guard('dosen')->check()) {
+//         $dosen = Auth::guard('dosen')->user();
+//         $matakuliah = $dosen->mataKuliah()->with('semester')->get();
+//         $semester = Semester::all();
+
+//         return Inertia::render('HomeDosen', [ // Pastikan Pages/HomeDosen.jsx ada
+//             'dosen' => $dosen,
+//             'matakuliah' => $matakuliah,
+//             'semesters' => $semester,
+//             'canLogin' => Route::has('logindosen'),
+//             'canRegister' => Route::has('registerdosen'),
+//             'laravelVersion' => Application::VERSION,
+//             'phpVersion' => PHP_VERSION,
+//         ]);
+//     }
+
+//     // default: kalau gak login siapa-siapa
+//     return redirect()->route('login');
+// });
 
 
-    return Inertia::render('Home', [
-        'mahasiswa' => $mahasiswa,
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-})->middleware(['auth', 'verified'])->name('home');
-
-Route::get('/homedosen', function () {
-    $mahasiswa = Mahasiswa::with('waliDosen')->get();
-
-    return Inertia::render('Home', [
-        'mahasiswa' => $mahasiswa,
-        'canLogin' => Route::has('logindosen'),
-        'canRegister' => Route::has('registerdosen'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-
-})->middleware(['auth:dosen', 'verified'])->name('homedosen');
 
 Route::get('/login', function () {
     return Inertia::render('LoginPage');
@@ -49,7 +90,7 @@ Route::get('/register', function () {
 
 Route::get('/logindosen', [LoginDosenController::class, 'create'])->name('logindosen');
 Route::post('/logindosen', [LoginDosenController::class, 'store']);
-Route::get('/logoutdosen', [LoginDosenController::class, 'destroy'])->name('logoutdosen');
+Route::post('/logoutdosen', [LoginDosenController::class, 'destroy'])->name('logoutdosen');
 
 
 Route::get('/registerdosen', [RegisterDosenController::class, 'create'])->name('registerdosen');
@@ -60,6 +101,11 @@ Route::post('/akademik/krs', [KrsController::class, 'store'])->middleware(['auth
 
 Route::get('/akademik/krs-dosen', [KrsDosenController::class, 'index'])->middleware(['auth:dosen'])->name('krs.dosen.index');
 Route::put('/akademik/krs-dosen/update-status/{id}', [KrsDosenController::class, 'updateStatus'])->name('krs.updateStatus');
+
+Route::middleware(['auth:dosen'])->group(function () {
+    Route::post('/matakuliah', [MataKuliahController::class, 'store'])->name('matakuliah.store');
+});
+
 
 Route::get('/uploadimage', function () {
     return Inertia::render('UploadImage');

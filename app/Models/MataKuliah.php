@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Dosen;
+use App\Models\Semester;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class MataKuliah extends Model
 {
@@ -15,6 +17,8 @@ class MataKuliah extends Model
         'kode_mk',
         'nama_mk',
         'sks',
+        'semester_id',
+        'dosen_id',
     ];
 
     // Relasi ke mahasiswa melalui KRS
@@ -33,5 +37,10 @@ class MataKuliah extends Model
     public function dosen()
     {
         return $this->belongsTo(Dosen::class);
+    }
+
+    public function semester()
+    {
+        return $this->belongsTo(Semester::class);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Mahasiswa;
+use App\Models\MataKuliah;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -31,5 +33,11 @@ class Dosen extends Authenticatable
     public function mahasiswa()
     {
         return $this->hasMany(Mahasiswa::class, 'wali_dosen_id');
+    }
+
+    // Relasi ke mata kuliah
+    public function mataKuliah()
+    {
+        return $this->hasMany(MataKuliah::class);
     }
 }

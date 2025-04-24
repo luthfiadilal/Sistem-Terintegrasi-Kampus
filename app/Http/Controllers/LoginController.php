@@ -31,7 +31,8 @@ class LoginController extends Controller
         // Coba autentikasi pengguna
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('home');
+            return redirect('/');
+
         }
 
         // Jika gagal login, kembalikan error

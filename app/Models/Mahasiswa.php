@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Krs;
+use App\Models\Dosen;
+use App\Models\PembayaranSemester;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Mahasiswa extends Authenticatable
 {
@@ -40,5 +43,10 @@ class Mahasiswa extends Authenticatable
     public function krs()
     {
         return $this->hasMany(Krs::class, 'mahasiswa_id');
+    }
+
+    public function pembayaranSemesters()
+    {
+        return $this->hasMany(PembayaranSemester::class);
     }
 }
