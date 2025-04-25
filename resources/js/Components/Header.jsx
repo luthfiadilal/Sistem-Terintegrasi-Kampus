@@ -5,7 +5,7 @@ import { ArrowRightToLine } from "lucide-react";
 export default function Header({ onToggleSidebar }) {
     const { auth } = usePage().props;
     const { url } = usePage();
-    console.log(auth.user);
+
     const user = auth?.user;
 
     const handleLogout = () => {

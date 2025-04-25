@@ -3,7 +3,6 @@ import { useForm, router } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
 export default function KrsDosen({ mahasiswaBimbingan }) {
-    console.log(mahasiswaBimbingan);
     const [selectedMahasiswa, setSelectedMahasiswa] = useState(null);
     const { put } = useForm();
     const [processingId, setProcessingId] = useState(null);

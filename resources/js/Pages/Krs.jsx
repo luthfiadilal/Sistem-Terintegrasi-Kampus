@@ -1,10 +1,17 @@
 import { useForm } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
-export default function Krs({ mataKuliah, krsSaya, periodeKrsSelesai }) {
+export default function Krs({
+    mataKuliah,
+    krsSaya,
+    periodeKrsSelesai,
+    belumLunas,
+}) {
     const { data, setData, post, processing } = useForm({
         mata_kuliah_id: "",
     });
+
+    console.log("belumLunas", belumLunas);
 
     const handleKontrak = (e) => {
         e.preventDefault();
@@ -17,6 +24,13 @@ export default function Krs({ mataKuliah, krsSaya, periodeKrsSelesai }) {
                 <h1 className="text-2xl font-semibold mb-4">
                     📄 Kartu Rencana Studi
                 </h1>
+
+                {belumLunas && (
+                    <div className="bg-yellow-100 text-yellow-800 px-4 py-3 rounded mb-4 font-semibold">
+                        ⚠️ Kamu belum menyelesaikan semua pembayaran untuk
+                        semester ini.
+                    </div>
+                )}
 
                 {periodeKrsSelesai && (
                     <div className="bg-red-100 text-red-800 px-4 py-3 rounded mb-4 font-semibold">

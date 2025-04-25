@@ -7,9 +7,6 @@ import { router, usePage } from "@inertiajs/react";
 export default function Sidebar({ children }) {
     const { props } = usePage();
     const userGuard = props.auth?.guard;
-    console.log(props.auth);
-    console.log("User Aktif:", userGuard);
-    console.log("Isi props.auth:", props.auth);
 
     const [openMenus, setOpenMenus] = useState({
         Akademik: false,

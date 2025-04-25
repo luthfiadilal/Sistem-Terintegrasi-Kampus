@@ -6,6 +6,8 @@ use App\Models\Krs;
 use Inertia\Inertia;
 use App\Models\MataKuliah;
 use Illuminate\Http\Request;
+use App\Models\KomponenPembayaran;
+use App\Models\PembayaranSemester;
 use Illuminate\Support\Facades\Auth;
 
 class KrsController extends Controller
@@ -14,30 +16,34 @@ class KrsController extends Controller
 
     public function index()
 {
-        $mahasiswaId = Auth::id();
-        $semesterId = 1; // Sementara hardcode, nanti bisa ambil dari dropdown atau data semester aktif
+    $mahasiswaId = Auth::id();
+    $semesterId = 1; // nanti bisa diambil dari dropdown / semester aktif
 
-        // Cek apakah sudah membayar semester ini
-        $pembayaran = PembayaranSemester::where('mahasiswa_id', $mahasiswaId)
-            ->where('semester_id', $semesterId)
-            ->first();
+    // Ambil semester dan komponen pembayarannya
+    $semester = \App\Models\Semester::with('komponenPembayaran')->findOrFail($semesterId);
+    $komponenIds = $semester->komponenPembayaran->pluck('id')->toArray();
 
-        if (!$pembayaran || $pembayaran->status !== 'dibayar') {
-            return redirect()->back()->with('error', 'Kamu harus membayar terlebih dahulu untuk semester ini.');
-        }
+    // Ambil semua komponen yang sudah dibayar
+    $pembayaranIds = PembayaranSemester::where('mahasiswa_id', $mahasiswaId)
+        ->where('semester_id', $semesterId)
+        ->where('status', 'dibayar')
+        ->pluck('komponen_pembayaran_id')
+        ->toArray();
 
-        // Jika sudah membayar, baru tampilkan halaman KRS
-        $mataKuliah = MataKuliah::all();
+    // Cek apakah semua komponen sudah dibayar
+    $belumLunas = !$pembayaranIds || $pembayaranIds->status !== 'dibayar';
 
-        $krsSaya = Krs::with('mataKuliah', 'mataKuliah.dosen')
-            ->where('mahasiswa_id', $mahasiswaId)
-            ->get();
+    $mataKuliah = MataKuliah::all();
+    $krsSaya = Krs::with('mataKuliah', 'mataKuliah.dosen')
+        ->where('mahasiswa_id', $mahasiswaId)
+        ->get();
 
-        return Inertia::render('Krs', [
-            'mataKuliah' => $mataKuliah,
-            'krsSaya' => $krsSaya,
-            'periodeKrsSelesai' => false // Nanti bisa diatur lewat setting
-        ]);
+    return Inertia::render('Krs', [
+        'mataKuliah' => $mataKuliah,
+        'krsSaya' => $krsSaya,
+        'periodeKrsSelesai' => false,
+        'belumLunas' => $belumLunas,
+    ]);
 
 }
 
@@ -56,6 +62,7 @@ class KrsController extends Controller
             'semester_id' => $semesterId,
             'komponen_pembayaran_id' => $komponen->id,
             'status' => 'dibayar',
+            'semester_id' => $semesterId,
         ])->exists();
     });
 

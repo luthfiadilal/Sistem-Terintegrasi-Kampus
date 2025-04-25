@@ -4,6 +4,7 @@ use Inertia\Inertia;
 use App\Models\Semester;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
+use App\Models\KomponenPembayaran;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
@@ -12,8 +13,9 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KrsDosenController;
 use App\Http\Controllers\LoginDosenController;
-use App\Http\Controllers\RegisterDosenController;
 use App\Http\Controllers\MataKuliahController;
+use App\Http\Controllers\RegisterDosenController;
+use App\Http\Controllers\KomponenPembayaranController;
 
 Route::middleware(['auth:web,dosen'])->get('/', function () {
     if (Auth::guard('web')->check()) {
@@ -31,11 +33,14 @@ Route::middleware(['auth:web,dosen'])->get('/', function () {
         $dosen = Auth::guard('dosen')->user();
         $matakuliah = $dosen->mataKuliah()->with('semester')->get();
         $semester = \App\Models\Semester::all();
+        $komponenPembayaran = KomponenPembayaran::with('semester')->get();
+
 
         return Inertia::render('HomeDosen', [
             'dosen' => $dosen,
             'matakuliah' => $matakuliah,
             'semesters' => $semester,
+            'komponenList' => $komponenPembayaran,
             'canLogin' => Route::has('logindosen'),
             'canRegister' => Route::has('registerdosen'),
             'laravelVersion' => Application::VERSION,
@@ -106,6 +111,8 @@ Route::middleware(['auth:dosen'])->group(function () {
     Route::post('/matakuliah', [MataKuliahController::class, 'store'])->name('matakuliah.store');
 });
 
+
+Route::post('/komponen-pembayaran', [KomponenPembayaranController::class, 'store'])->name('komponen-pembayaran.store');
 
 Route::get('/uploadimage', function () {
     return Inertia::render('UploadImage');
