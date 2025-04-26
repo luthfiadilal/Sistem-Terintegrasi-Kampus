@@ -5,6 +5,7 @@ import MatakuliahDosen from "@/Layouts/MatakuliahDosen";
 import { Button } from "@/Components/Button";
 import classNames from "classnames";
 import KomponenPembayaran from "@/Components/KomponenPembayaran";
+import SemesterList from "@/Layouts/SemesterList";
 
 export default function HomeDosen({ semesters, matakuliah, komponenList }) {
     const [showForm, setShowForm] = useState(false);
@@ -36,6 +37,17 @@ export default function HomeDosen({ semesters, matakuliah, komponenList }) {
                         onClick={() => setActiveTab("komponen")}
                     >
                         Komponen Pembayaran
+                    </button>
+                    <button
+                        className={classNames(
+                            "px-4 py-2 rounded font-semibold",
+                            activeTab === "semester"
+                                ? "bg-blue-600 text-white"
+                                : "bg-gray-200"
+                        )}
+                        onClick={() => setActiveTab("semester")}
+                    >
+                        Semester
                     </button>
                 </div>
 
@@ -88,12 +100,16 @@ export default function HomeDosen({ semesters, matakuliah, komponenList }) {
 
                 {activeTab === "komponen" && (
                     <>
-                        {console.log("render komponen pembayaran")}
                         <KomponenPembayaran
                             semesterList={semesters}
                             komponenList={komponenList}
                         />
                     </>
+                )}
+                {activeTab === "semester" && (
+                    <div>
+                        <SemesterList semesters={semesters} />
+                    </div>
                 )}
             </div>
         </AuthenticatedLayout>

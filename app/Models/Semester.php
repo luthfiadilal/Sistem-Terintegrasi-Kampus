@@ -39,4 +39,9 @@ class Semester extends Model
     {
         return $this->belongsToMany(KomponenPembayaran::class, 'komponen_semester');
     }
+
+    public function scopeAktif($query)
+    {
+        return $query->where('status', true);
+    }
 }

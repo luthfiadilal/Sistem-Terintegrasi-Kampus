@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Semester;
 use Illuminate\Http\Request;
 
 class SemesterController extends Controller
@@ -9,6 +10,18 @@ class SemesterController extends Controller
     public function index()
     {
         return Semester::all();
+    }
+
+    public function setActive($id)
+    {
+        // Nonaktifkan semua semester
+        Semester::query()->update(['status' => false]);
+
+        // Aktifkan semester yang dipilih
+        $semester = Semester::findOrFail($id);
+        $semester->update(['status' => true]);
+
+        return redirect()->back()->with('success', 'Semester aktif berhasil diperbarui.');
     }
 
     public function store(Request $request)

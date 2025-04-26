@@ -8,7 +8,7 @@ export default function KomponenPembayaran({ semesterList, komponenList }) {
     const toggleForm = () => setShowForm(!showForm);
 
     return (
-        <div className="p-3 mx-auto space-y-6">
+        <div className=" mx-auto space-y-6">
             <h1 className="text-2xl font-bold text-green-700">
                 Komponen Pembayaran
             </h1>

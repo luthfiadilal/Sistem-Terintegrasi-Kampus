@@ -12,6 +12,7 @@ use App\Http\Controllers\KrsController;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KrsDosenController;
+use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\LoginDosenController;
 use App\Http\Controllers\MataKuliahController;
 use App\Http\Controllers\RegisterDosenController;
@@ -113,6 +114,8 @@ Route::middleware(['auth:dosen'])->group(function () {
 
 
 Route::post('/komponen-pembayaran', [KomponenPembayaranController::class, 'store'])->name('komponen-pembayaran.store');
+
+Route::put('/semester/{id}', [SemesterController::class, 'update']);
 
 Route::get('/uploadimage', function () {
     return Inertia::render('UploadImage');
