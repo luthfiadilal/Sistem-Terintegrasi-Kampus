@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { BookOpen, CreditCard, FileText } from "lucide-react";
 import { ChevronDown } from "lucide-react";
-import { router, usePage } from "@inertiajs/react";
+import { Link, router, usePage } from "@inertiajs/react";
 
 export default function Sidebar({ children }) {
     const { props } = usePage();
@@ -134,10 +134,10 @@ export default function Sidebar({ children }) {
                                 <li
                                     className="cursor-pointer hover:text-green-500 py-1"
                                     onClick={() =>
-                                        router.get(route("pembayaran.index"))
+                                        router.get(route("keuangan.tagihan"))
                                     }
                                 >
-                                    History Pembayaran
+                                    History Keuangan
                                 </li>
                             </motion.ul>
                         </li>

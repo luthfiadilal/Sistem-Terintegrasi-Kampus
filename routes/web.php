@@ -17,6 +17,7 @@ use App\Http\Controllers\LoginDosenController;
 use App\Http\Controllers\MataKuliahController;
 use App\Http\Controllers\RegisterDosenController;
 use App\Http\Controllers\KomponenPembayaranController;
+use App\Http\Controllers\PembayaranSemesterController;
 
 Route::middleware(['auth:web,dosen'])->get('/', function () {
     if (Auth::guard('web')->check()) {
@@ -116,6 +117,10 @@ Route::middleware(['auth:dosen'])->group(function () {
 Route::post('/komponen-pembayaran', [KomponenPembayaranController::class, 'store'])->name('komponen-pembayaran.store');
 
 Route::put('/semester/{id}', [SemesterController::class, 'update']);
+
+Route::get('/keuangan/history_pembayaran', [PembayaranSemesterController::class, 'index'])->name('keuangan.tagihan');
+
+
 
 Route::get('/uploadimage', function () {
     return Inertia::render('UploadImage');

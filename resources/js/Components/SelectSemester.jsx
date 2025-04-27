@@ -6,7 +6,7 @@ export default function SelectSemester({
     return (
         <select
             value={selectedSemester}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={(e) => onChange(parseInt(e.target.value))}
             className="w-full border rounded p-2"
         >
             <option value="">Pilih Semester</option>
