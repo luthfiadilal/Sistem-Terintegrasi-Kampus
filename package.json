@@ -26,6 +26,7 @@
         "@inertiajs/inertia-react": "^0.8.1",
         "classnames": "^2.5.1",
         "framer-motion": "^12.6.5",
-        "lucide-react": "^0.482.0"
+        "lucide-react": "^0.482.0",
+        "react-hot-toast": "^2.5.2"
     }
 }

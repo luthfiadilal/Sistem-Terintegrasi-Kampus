@@ -54,26 +54,37 @@ class PembayaranSemesterController extends Controller
 
     // Menangani proses pembayaran jika diperlukan
     public function bayar(Request $request)
-    {
-        $request->validate([
-            'semester_id' => 'required|exists:semester,id',
-            'komponen_pembayaran_id' => 'required|exists:komponen_pembayarans,id',
-        ]);
+{
+    $request->validate([
+        'semester_id' => 'required|exists:semester,id',
+    ]);
 
-        // Proses pembayaran untuk semester dan komponen yang dipilih
-        PembayaranSemester::updateOrCreate(
-            [
-                'mahasiswa_id' => Auth::id(),
-                'semester_id' => $request->semester_id,
-                'komponen_pembayaran_id' => $request->komponen_pembayaran_id,
-            ],
-            [
+    $mahasiswaId = Auth::id();
+
+    // Ambil semua komponen pembayaran di semester ini
+    $semester = Semester::with('komponenPembayaran')->findOrFail($request->semester_id);
+
+    foreach ($semester->komponenPembayaran as $komponen) {
+        // Cek apakah sudah dibayar
+        $existingPayment = PembayaranSemester::where('mahasiswa_id', $mahasiswaId)
+            ->where('semester_id', $semester->id)
+            ->where('komponen_pembayaran_id', $komponen->id)
+            ->first();
+
+        if (!$existingPayment) {
+            // Kalau belum ada, buat pembayaran baru
+            PembayaranSemester::create([
+                'mahasiswa_id' => $mahasiswaId,
+                'semester_id' => $semester->id,
+                'komponen_pembayaran_id' => $komponen->id,
                 'status' => 'dibayar',
                 'tanggal_bayar' => now(),
-                'jumlah_bayar' => $request->jumlah_bayar,  // Angka yang dibayar sesuai input
-            ]
-        );
-
-        return back()->with('success', 'Pembayaran berhasil!');
+                'jumlah_bayar' => $komponen->harga, // ambil dari harga komponen
+            ]);
+        }
     }
+
+    return back()->with('success', 'Semua pembayaran berhasil dilakukan!');
+}
+
 }

@@ -119,6 +119,8 @@ Route::post('/komponen-pembayaran', [KomponenPembayaranController::class, 'store
 Route::put('/semester/{id}', [SemesterController::class, 'update']);
 
 Route::get('/keuangan/history_pembayaran', [PembayaranSemesterController::class, 'index'])->name('keuangan.tagihan');
+Route::post('/keuangan/history_pembayaran/bayar', [PembayaranSemesterController::class, 'bayar'])->name('pembayaran.bayar');
+
 
 
 
