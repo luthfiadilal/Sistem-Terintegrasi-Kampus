@@ -12,23 +12,32 @@ export default function MataKuliahTable({
     };
 
     return (
-        <div className="overflow-x-auto shadow rounded-lg">
-            <table className="min-w-full bg-white border">
-                <thead className="bg-gray-100">
+        <div className="overflow-x-auto rounded-xl shadow-md border border-gray-200">
+            <table className="min-w-full bg-white">
+                <thead className="bg-green-600 text-gray-700 text-sm uppercase tracking-wider">
                     <tr>
-                        <th className="px-4 py-2 text-left">Kode</th>
-                        <th className="px-4 py-2 text-left">Mata Kuliah</th>
-                        <th className="px-4 py-2 text-left">Dosen</th>
-                        <th className="px-4 py-2 text-left">Status</th>
-                        <th className="px-4 py-2 text-left">Aksi</th>
+                        <th className="px-6 text-white py-4 text-left">Kode</th>
+                        <th className="px-6 text-white py-4 text-left">
+                            Mata Kuliah
+                        </th>
+                        <th className="px-6 text-white py-4 text-left">
+                            Dosen
+                        </th>
+                        <th className="px-6 text-white py-4 text-left">Hari</th>
+                        <th className="px-6 text-white py-4 text-left">Jam</th>
+
+                        <th className="px-6 text-white py-4 text-left">
+                            Status
+                        </th>
+                        <th className="px-6 text-white py-4 text-left">Aksi</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody className="text-gray-700 text-sm">
                     {mataKuliahList.length === 0 ? (
                         <tr>
                             <td
                                 colSpan="5"
-                                className="text-center py-6 text-gray-500"
+                                className="text-center py-10 text-gray-400"
                             >
                                 Pilih semester untuk melihat mata kuliah
                             </td>
@@ -39,25 +48,32 @@ export default function MataKuliahTable({
                             const sudahDikontrak = !!status;
 
                             return (
-                                <tr key={mk.id} className="border-t">
-                                    <td className="px-4 py-2">{mk.kode_mk}</td>
-                                    <td className="px-4 py-2">{mk.nama_mk}</td>
-                                    <td className="px-4 py-2">
+                                <tr
+                                    key={mk.id}
+                                    className="border-t hover:bg-gray-50 transition"
+                                >
+                                    <td className="px-6 py-4">{mk.kode_mk}</td>
+                                    <td className="px-6 py-4">{mk.nama_mk}</td>
+                                    <td className="px-6 py-4">
                                         {mk.dosen?.nama_lengkap ?? "-"}
                                     </td>
-                                    <td className="px-4 py-2">
+                                    <td className="px-6 py-4">{mk.hari}</td>
+                                    <td className="px-6 py-4">
+                                        {mk.jam_mulai} -{""} {mk.jam_selesai}
+                                    </td>
+                                    <td className="px-6 py-4">
                                         {status === "pending" && (
-                                            <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs">
+                                            <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-semibold">
                                                 Menunggu
                                             </span>
                                         )}
                                         {status === "disetujui" && (
-                                            <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">
+                                            <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">
                                                 Diterima
                                             </span>
                                         )}
                                         {status === "ditolak" && (
-                                            <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs">
+                                            <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-semibold">
                                                 Ditolak
                                             </span>
                                         )}
@@ -67,17 +83,16 @@ export default function MataKuliahTable({
                                             </span>
                                         )}
                                     </td>
-                                    <td className="px-4 py-2">
-                                        {!sudahDikontrak && (
+                                    <td className="px-6 py-4">
+                                        {!sudahDikontrak ? (
                                             <button
                                                 onClick={() => onKontrak(mk.id)}
                                                 disabled={disabled}
-                                                className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm disabled:opacity-50"
+                                                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-full text-xs transition disabled:opacity-50"
                                             >
                                                 Kontrak
                                             </button>
-                                        )}
-                                        {sudahDikontrak && (
+                                        ) : (
                                             <span className="text-gray-400 text-xs">
                                                 Sudah dikontrak
                                             </span>

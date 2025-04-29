@@ -19,6 +19,9 @@ class MataKuliah extends Model
         'sks',
         'semester_id',
         'dosen_id',
+        'hari',
+        'jam_mulai',
+        'jam_selesai',
     ];
 
     // Relasi ke mahasiswa melalui KRS

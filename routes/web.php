@@ -109,6 +109,7 @@ Route::post('/akademik/krs', [KrsController::class, 'store'])->middleware(['auth
 Route::get('/akademik/krs-dosen', [KrsDosenController::class, 'index'])->middleware(['auth:dosen'])->name('krs.dosen.index');
 Route::put('/akademik/krs-dosen/update-status/{id}', [KrsDosenController::class, 'updateStatus'])->name('krs.updateStatus');
 
+
 Route::middleware(['auth:dosen'])->group(function () {
     Route::post('/matakuliah', [MataKuliahController::class, 'store'])->name('matakuliah.store');
 });
@@ -121,8 +122,7 @@ Route::put('/semester/{id}', [SemesterController::class, 'update']);
 Route::get('/keuangan/history_pembayaran', [PembayaranSemesterController::class, 'index'])->name('keuangan.tagihan');
 Route::post('/keuangan/history_pembayaran/bayar', [PembayaranSemesterController::class, 'bayar'])->name('pembayaran.bayar');
 
-
-
+Route::delete('/matakuliah/{id}', [MataKuliahController::class, 'destroy'])->name('matakuliah.destroy');
 
 Route::get('/uploadimage', function () {
     return Inertia::render('UploadImage');

@@ -48,10 +48,11 @@ export default function Home() {
                                     </div>
                                     <div className="mt-1">
                                         <span className="inline-block bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">
-                                            Senin
+                                            {item.mata_kuliah.hari}
                                         </span>
                                         <span className="ml-2 text-sm text-green-600">
-                                            08:00 ~ 09:40
+                                            {item.mata_kuliah.jam_mulai} -{" "}
+                                            {item.mata_kuliah.jam_selesai}
                                         </span>
                                     </div>
                                 </div>

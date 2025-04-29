@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Krs;
 use Inertia\Inertia;
 use App\Models\Semester;
+use App\Models\Mahasiswa;
 use App\Models\MataKuliah;
 use Illuminate\Http\Request;
 use App\Models\KomponenPembayaran;
 use App\Models\PembayaranSemester;
+use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\Auth;
 
 class PembayaranSemesterController extends Controller
@@ -22,6 +24,8 @@ class PembayaranSemesterController extends Controller
         $semesters = Semester::with('komponenPembayaran')->get();
 
         $semuaKomponen = [];
+
+        $dosenWali = Mahasiswa::with('waliDosen')->findOrFail($mahasiswaId)->waliDosen;
 
         foreach ($semesters as $semester) { // <- loop semester dulu
             foreach ($semester->komponenPembayaran as $komponen) { // baru loop komponen
@@ -47,6 +51,8 @@ class PembayaranSemesterController extends Controller
             'semesters' => $semesters,
             'total' => 0, // bisa dihitung di frontend
             'selectedSemester' => $semesterId,
+            'mahasiswaId' => $mahasiswaId,
+            'dosenWali' => $dosenWali,
         ]);
     }
 
@@ -85,6 +91,40 @@ class PembayaranSemesterController extends Controller
     }
 
     return back()->with('success', 'Semua pembayaran berhasil dilakukan!');
+}
+
+public function generateLaporanPembayaran($semesterId)
+{
+    $mahasiswaId = Auth::id();
+
+    // Ambil data mahasiswa dan dosen wali
+    $mahasiswa = Mahasiswa::findOrFail($mahasiswaId);
+    $semester = Semester::findOrFail($semesterId);
+    $dosenWali = Dosen::findOrFail($mahasiswa->dosen_wali_id); // pastikan mahasiswa memiliki dosen wali
+
+    // Ambil komponen pembayaran dan statusnya
+    $komponenPembayaran = PembayaranSemester::with('komponenPembayaran')
+        ->where('mahasiswa_id', $mahasiswaId)
+        ->where('semester_id', $semesterId)
+        ->get();
+
+    // Hitung total pembayaran
+    $totalPembayaran = $komponenPembayaran->sum('jumlah_bayar');
+
+    // Data untuk PDF
+    $data = [
+        'mahasiswa' => $mahasiswa,
+        'semester' => $semester,
+        'dosenWali' => $dosenWali,
+        'komponenPembayaran' => $komponenPembayaran,
+        'totalPembayaran' => $totalPembayaran
+    ];
+
+    // Render view dan generate PDF
+    $pdf = PDF::loadView('pdf.laporanPembayaran', $data);
+
+    // Download PDF
+    return $pdf->download("laporan_pembayaran_{$mahasiswa->nama}_semester_{$semester->tahun}.pdf");
 }
 
 }

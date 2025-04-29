@@ -40,6 +40,9 @@ class MataKuliahController extends Controller
             'nama_mk' => 'required|string|max:255',
             'sks' => 'required|integer|min:1|max:6',
             'semester_id' => 'required|exists:semester,id',
+            'hari' => 'nullable|string|max:20',
+            'jam_mulai' => 'nullable|date_format:H:i', // validasi harus format jam
+            'jam_selesai' => 'nullable|date_format:H:i',
         ]);
 
         // tangkap dosen id
@@ -52,9 +55,20 @@ class MataKuliahController extends Controller
             'sks' => $request->sks,
             'semester_id' => $request->semester_id,
             'dosen_id' => auth()->user()?->id ?? auth('dosen')->id(), // fallback ke user biasa
+            'hari' => $request->hari,
+            'jam_mulai' => $request->jam_mulai,
+            'jam_selesai' => $request->jam_selesai,
         ]);
 
 
         return redirect()->back()->with('success', 'Mata kuliah berhasil ditambahkan');
+    }
+
+    public function destroy($id)
+    {
+        $mataKuliah = MataKuliah::findOrFail($id);
+
+        $mataKuliah->delete();
+        return redirect()->back()->with('success', 'Mata kuliah berhasil dihapus');
     }
 }

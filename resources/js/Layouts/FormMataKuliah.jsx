@@ -10,6 +10,9 @@ export default function FormMatakuliah({ semesters }) {
         kode_mk: "",
         sks: "",
         semester_id: "",
+        hari: "",
+        jam_mulai: "",
+        jam_selesai: "",
     });
 
     const handleSubmit = (e) => {
@@ -73,6 +76,46 @@ export default function FormMatakuliah({ semesters }) {
                 </select>
                 {errors.semester_id && (
                     <p className="text-red-500">{errors.semester_id}</p>
+                )}
+            </div>
+
+            {/* Tambahan Hari */}
+            <div>
+                <Label htmlFor="hari">Hari</Label>
+                <Input
+                    id="hari"
+                    value={data.hari}
+                    onChange={(e) => setData("hari", e.target.value)}
+                    placeholder="Contoh: Senin, Selasa"
+                />
+                {errors.hari && <p className="text-red-500">{errors.hari}</p>}
+            </div>
+
+            {/* Tambahan Jam Mulai */}
+            <div>
+                <Label htmlFor="jam_mulai">Jam Mulai</Label>
+                <Input
+                    id="jam_mulai"
+                    type="time"
+                    value={data.jam_mulai}
+                    onChange={(e) => setData("jam_mulai", e.target.value)}
+                />
+                {errors.jam_mulai && (
+                    <p className="text-red-500">{errors.jam_mulai}</p>
+                )}
+            </div>
+
+            {/* Tambahan Jam Selesai */}
+            <div>
+                <Label htmlFor="jam_selesai">Jam Selesai</Label>
+                <Input
+                    id="jam_selesai"
+                    type="time"
+                    value={data.jam_selesai}
+                    onChange={(e) => setData("jam_selesai", e.target.value)}
+                />
+                {errors.jam_selesai && (
+                    <p className="text-red-500">{errors.jam_selesai}</p>
                 )}
             </div>
 
