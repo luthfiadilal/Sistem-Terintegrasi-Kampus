@@ -13,7 +13,6 @@ export default function KomponenPembayaran({ semesterList, komponenList }) {
                 Komponen Pembayaran
             </h1>
 
-            {/* Tombol untuk toggle form */}
             <button
                 onClick={toggleForm}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-800"
@@ -21,10 +20,8 @@ export default function KomponenPembayaran({ semesterList, komponenList }) {
                 {showForm ? "Batal" : "Tambah Komponen"}
             </button>
 
-            {/* Form tampil saat showForm = true */}
             {showForm && <FormKomponenPembayaran semesterList={semesterList} />}
 
-            {/* Daftar komponen */}
             <KomponenPembayaranList komponenList={komponenList ?? []} />
         </div>
     );

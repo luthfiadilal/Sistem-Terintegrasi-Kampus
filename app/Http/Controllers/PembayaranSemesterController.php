@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 
 class PembayaranSemesterController extends Controller
 {
-    // Menampilkan halaman Tagihan dan KRS
+
     public function index(Request $request)
     {
         $mahasiswaId = Auth::id();
@@ -27,8 +27,8 @@ class PembayaranSemesterController extends Controller
 
         $dosenWali = Mahasiswa::with('waliDosen')->findOrFail($mahasiswaId)->waliDosen;
 
-        foreach ($semesters as $semester) { // <- loop semester dulu
-            foreach ($semester->komponenPembayaran as $komponen) { // baru loop komponen
+        foreach ($semesters as $semester) {
+            foreach ($semester->komponenPembayaran as $komponen) {
                 $pembayaran = PembayaranSemester::where('mahasiswa_id', $mahasiswaId)
                     ->where('semester_id', $semester->id)
                     ->where('komponen_pembayaran_id', $komponen->id)
@@ -47,9 +47,9 @@ class PembayaranSemesterController extends Controller
 
 
         return Inertia::render('Tagihan', [
-            'komponen' => $semuaKomponen, // sekarang semua semester
+            'komponen' => $semuaKomponen,
             'semesters' => $semesters,
-            'total' => 0, // bisa dihitung di frontend
+            'total' => 0,
             'selectedSemester' => $semesterId,
             'mahasiswaId' => $mahasiswaId,
             'dosenWali' => $dosenWali,
@@ -58,7 +58,7 @@ class PembayaranSemesterController extends Controller
 
 
 
-    // Menangani proses pembayaran jika diperlukan
+
     public function bayar(Request $request)
 {
     $request->validate([
@@ -67,25 +67,25 @@ class PembayaranSemesterController extends Controller
 
     $mahasiswaId = Auth::id();
 
-    // Ambil semua komponen pembayaran di semester ini
+
     $semester = Semester::with('komponenPembayaran')->findOrFail($request->semester_id);
 
     foreach ($semester->komponenPembayaran as $komponen) {
-        // Cek apakah sudah dibayar
+
         $existingPayment = PembayaranSemester::where('mahasiswa_id', $mahasiswaId)
             ->where('semester_id', $semester->id)
             ->where('komponen_pembayaran_id', $komponen->id)
             ->first();
 
         if (!$existingPayment) {
-            // Kalau belum ada, buat pembayaran baru
+
             PembayaranSemester::create([
                 'mahasiswa_id' => $mahasiswaId,
                 'semester_id' => $semester->id,
                 'komponen_pembayaran_id' => $komponen->id,
                 'status' => 'dibayar',
                 'tanggal_bayar' => now(),
-                'jumlah_bayar' => $komponen->harga, // ambil dari harga komponen
+                'jumlah_bayar' => $komponen->harga,
             ]);
         }
     }

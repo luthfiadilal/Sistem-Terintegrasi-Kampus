@@ -1,7 +1,6 @@
 import Header from "@/Components/Header";
 import Sidebar from "./Sidebar";
 import { useState } from "react";
-import { usePage } from "@inertiajs/react";
 
 export default function AuthenticatedLayout({ children }) {
     const [showSidebar, setShowSidebar] = useState(true);

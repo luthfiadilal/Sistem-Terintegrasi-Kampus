@@ -14,7 +14,7 @@ class Krs extends Model
 
     protected $table = 'krs';
 
-    public $timestamps = false; // <--- tambahkan ini
+    public $timestamps = false;
 
     protected $fillable = [
         'mahasiswa_id',
